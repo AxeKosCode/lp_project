@@ -1,0 +1,11 @@
+.vscode/
+__pycache__/
+venv/
+env/
+virt/
+virtual/
+
+config.py
+*.db
+*.log
+

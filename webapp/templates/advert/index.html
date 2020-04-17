@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-8">
+            {% include("messages.html") %}
+            <h2>{{ mini_title }}</h2>
+            {% for advert in adverts_list %}
+            <h3><a href="{{ url_for('advert.single_advert', advert_id=advert.id) }}">{{ advert.title }}</a> \ {{ advert.price }}</h3>
+            <p>{{ advert.published.strftime("%d.%m.%Y %H:%M") }} | Комментарии: {{ advert.comments_count() }}</p>
+            <hr />
+            {% endfor %}
+        </div>
+        <div class="col-4">
+            <h2>Прогноз погоды</h2>
+            {% if weather %}
+                {% if weather.today %}
+                    Погода сегодня: {{ weather.today.temp_C }}, ощущается как {{ weather.today.FeelsLikeC }}<br>
+                {% endif %}
+                {% if weather.tomorrow %}
+                    <h2>Прогноз на завтра, {{ weather.tomorrow.date }}: {{ weather.tomorrow.tempC }}</h2>
+                {% endif %}
+            {% else %}
+                Сервис погоды временно недоступен
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
