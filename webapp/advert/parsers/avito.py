@@ -1,12 +1,12 @@
-from webapp.advert.models import Advert
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
+from flask import render_template
 import locale
 import platform
 
-from webapp.db import db
-from webapp.advert.models import Advert
 from webapp.advert.parsers.utils import get_html, save_adverts
+from webapp.advert.models import Advert
+from webapp.db import db
 
 
 
@@ -16,7 +16,10 @@ else:
     locale.setlocale(locale.LC_TIME, 'ru_RU.utf-8')
 
 def parse_avito_date(date_str):
-    return datetime.strptime('20 '+date_str, "%y %d %B %H:%M")
+    try:
+        return datetime.strptime('20 '+date_str, "%y %d %B %H:%M")
+    except ValueError:
+        return datetime.now()
 
 def get_adverts_snippets():
     html = get_html('https://www.avito.ru/sankt-peterburg/muzykalnye_instrumenty/gitary_i_drugie_strunnye-ASgBAgICAUTEAsYK')
@@ -29,10 +32,7 @@ def get_adverts_snippets():
             url = 'https://www.avito.ru' + advert.find('a', class_='snippet-link')['href']
             price = advert.find('span', class_='snippet-price').text.strip()
             published = advert.find('div', class_="snippet-date-info")['data-tooltip']
-            try:
-                published = parse_avito_date(published)
-            except ValueError:
-                pass
+            published = parse_avito_date(published)
             save_adverts(title, url, price, published)
 
 def get_adverts_content():
@@ -46,4 +46,3 @@ def get_adverts_content():
                 advert.text = advert_text
                 db.session.add(advert)
                 db.session.commit()
-

@@ -17,8 +17,8 @@ def get_html(url):
 
 
 def save_adverts(title, url, price, published):
-    news_exists = Advert.query.filter(Advert.url == url).count()
-    if not news_exists:
+    adverts_exists = Advert.query.filter(Advert.url == url).count()
+    if not adverts_exists:
         new_advert = Advert(title=title, url=url, price=price, published=published)
         db.session.add(new_advert)
         db.session.commit()

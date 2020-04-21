@@ -6,10 +6,20 @@ from sqlalchemy.orm import relationship
 class Advert(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String, nullable = False)
+    theme = db.Column(db.String, nullable = True)
     url = db.Column(db.String, unique = True, nullable = False)
     price = db.Column(db.String, nullable = True)
     published = db.Column(db.DateTime, nullable = False)
     text = db.Column(db.Text, nullable = True)
+    adress = db.Column(db.Text, nullable = True)
+    seller = db.Column(db.String, nullable = True)
+    phone = db.Column(db.Text, nullable = True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('user.id', ondelete='CASCADE'),
+        nullable = True,
+        index=True
+    )
 
     def comments_count(self):
         return Comment.query.filter(Comment.advert_id == self.id).count()

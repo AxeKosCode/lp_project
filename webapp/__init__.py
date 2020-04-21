@@ -9,6 +9,8 @@ from webapp.advert.views import blueprint as advert_blueprint
 from webapp.user.views import blueprint as user_blueprint
 
 
+# reff = '/'
+
 #export FLASK_APP=webapp && export FLASK_ENV=development && flask run
 #./run.sh
 def create_app():
@@ -16,6 +18,7 @@ def create_app():
     app.config.from_pyfile('config.py')
     db.init_app(app)
     migrate = Migrate(app, db)
+
 
     login_manager = LoginManager()
     login_manager.init_app(app)

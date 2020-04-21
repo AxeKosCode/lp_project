@@ -5,12 +5,14 @@ from webapp.user.forms import LoginForm, RegistrationForm
 from webapp.user.models import User
 from webapp.utils import get_redirect_target
 from webapp.db import db
-
+# from webapp.temp_var import reff
+# from . import reff
 
 blueprint = Blueprint('user', __name__, url_prefix='/users')
 @blueprint.route('/login')
 def login():
     if current_user.is_authenticated:
+        print('!!! USER is authenticated !!!')
         return redirect(get_redirect_target())
     title = 'Авторизация'
     login_form = LoginForm()
@@ -38,6 +40,14 @@ def logout():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('advert.index'))
+    # global reff
+    # reff = '/'
+    # if not request.referrer==request.url:
+    #     if request.referrer==None:
+    #         reff = '/'
+    #     else:
+    #         reff = request.referrer
+    # print('reff\t\t=',reff,'\n'+'request.\t=',request.referrer)
     form = RegistrationForm()
     title = 'Регистрация'
     return render_template('user/registration.html', page_title=title, form=form)
@@ -51,7 +61,10 @@ def process_reg():
         db.session.add(new_user)
         db.session.commit()
         flash('Вы успешно зарегистрировались!')
-        return redirect(url_for('user.login'))
+        login_user(new_user)
+        flash('Вы успешно вошли на сайт')
+        print(current_user.is_authenticated)
+        return redirect(url_for('advert.index'))
     else:
         for field, errors in form.errors.items():
             for error in errors:
