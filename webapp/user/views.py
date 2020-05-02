@@ -3,10 +3,12 @@ from flask_login import login_user, logout_user, current_user
 
 from webapp.user.forms import LoginForm, RegistrationForm
 from webapp.user.models import User
+from webapp.user.decorators import reff#, check_referrer
 from webapp.utils import get_redirect_target
 from webapp.db import db
 # from webapp.temp_var import reff
 # from . import reff
+import time
 
 blueprint = Blueprint('user', __name__, url_prefix='/users')
 @blueprint.route('/login')
@@ -37,6 +39,7 @@ def logout():
     return redirect(get_redirect_target())
 
 @blueprint.route('/register')
+# @check_referrer
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('advert.index'))
@@ -47,7 +50,20 @@ def register():
     #         reff = '/'
     #     else:
     #         reff = request.referrer
-    # print('reff\t\t=',reff,'\n'+'request.\t=',request.referrer)
+    global reff
+    print('=Начинаем проверку! Внутри декоратора global reff = ', reff)
+    if not request.referrer==request.url:
+        if request.referrer==None:
+            request.referrer = url_for('advert.index')
+            print('request.referrer равен None! Присвоили ему адрес главной стр. referrer =', request.referrer)
+        else:
+            reff = request.referrer
+            print('referrer и url не равны) всё ок! => Переписываем reff на ', reff)
+    else:
+        request.referrer = reff
+        print('Присвоили request.referrer значение reff`a', request.referrer, '\nСам reff =', reff)
+    ###
+    print('==На этапе /register перед рендером шаблона регистрации==\n global reff\t=',reff,'\n'+' .referrer\t=',request.referrer)
     form = RegistrationForm()
     title = 'Регистрация'
     return render_template('user/registration.html', page_title=title, form=form)

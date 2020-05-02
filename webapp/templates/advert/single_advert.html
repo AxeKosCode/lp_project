@@ -4,11 +4,20 @@
     <div class="row">
         <div class="col-8">
             {% include("messages.html") %}
-            {{ advert.text | safe }}
-            {% if advert.comments %}
+            {{ advert.description | safe }}
+            <div class="padd">
+                <img src="{{ url_for('static', filename='') }}img/adv/{{ advert.id }}/m/1.jpg">
+            </div>
+            <div class="padd">
+                <img src="/img/adv/{{ advert.id }}/m/2.jpg"">
+            </div>
+            <div class="padd">
+                    <img src="/img/adv/{{ advert.id }}/m/3.jpg">
+            </div>
+                {% if advert.comments %}
                 <h3>Комментарии:</h3>
                 {% for comment in advert.comments %}
-                <div class="card">
+                <div class="card wrapp-1">
                     <div class="card-body">
                         <p class="card-text">{{ comment.text }}</p>
                         <p class="card-text">

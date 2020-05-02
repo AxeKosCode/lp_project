@@ -9,8 +9,32 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
         <title>{{ mini_title }}</title>
+        <style>
+            .padd {
+                padding: 10px;
+            }
+            .base-bg {
+             background: rgba(164, 189, 158, 0.397);
+            }
+            .wrapp { 
+             width: 100%; /* Ширина */
+             height: 680px;
+             /*background: rgba(177, 235, 163, 0.397);*/
+             padding: 10px;
+            }
+            .wrapp-1 {
+             width: 97%; /* Ширина */
+             height: 100px;
+             background: rgba(119, 165, 108, 0.233);
+             padding: 10px;
+             margin: 10px;
+            }
+            .gray {
+                color: rgb(167, 167, 167)
+            }
+           </style>
     </head>
-    <body>
+    <body class="base-bg">
         {% include "menu.html" %}
         <div class="container">
             <h1>{{ page_title }}</h1>

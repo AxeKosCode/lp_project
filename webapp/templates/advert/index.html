@@ -3,14 +3,48 @@
 {% block content %}
     <div class="row">
         <div class="col-8">
+          <div class="wrapp">
             {% include("messages.html") %}
             <h2>{{ mini_title }}</h2>
-            {% for advert in adverts_list %}
-            <h3><a href="{{ url_for('advert.single_advert', advert_id=advert.id) }}">{{ advert.title }}</a> \ {{ advert.price }}</h3>
-            <p>{{ advert.published.strftime("%d.%m.%Y %H:%M") }} | Комментарии: {{ advert.comments_count() }}</p>
+            {% for advert in pages.items %}
+            <div class="card wrapp-1">
+                <h3><a href="{{ url_for('advert.single_advert', advert_id=advert.id) }}">{{ advert.title }}</a> \ {{ advert.price }}</h3>
+                <p>{{ advert.published.strftime("%d.%m.%Y %H:%M") }} | Комментарии: {{ advert.comments_count() }}</p>
+            </div>
             <hr />
             {% endfor %}
+          </div>
+
+        <div class="d-flex justify-content-center">
+            <nav >
+                <ul class="pagination">
+                    <li {% if not pages.has_prev %} class="page-item disabled" {% endif %}>
+                    <a class="page-link" href="./?page={{ pages.prev_num }}" tabindex="-1" aria-disabled="true">← Пред.</a>
+                    </li>
+
+                    {% for page in pages.iter_pages(right_current=3) %}
+                    <li {% if page == pages.page %} class="page-item active" aria-current="page" {% endif %} >
+                    <a class="page-link" 
+                        {% if page != None %}
+                            href="./?page={{ page }}"> {{ page }}
+                        {% else %}
+                            href="#"> ... 
+                        {% endif %} <span class="sr-only">(current)</span>
+                    </a>
+                    </li>
+                    {% endfor %}
+
+                    {% if pages.has_next %}
+                    <li class="page-item">
+                    <a class="page-link" href="./?page={{ pages.next_num }}">След. →</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
+        </div>
+
+
         <div class="col-4">
             <h2>Прогноз погоды</h2>
             {% if weather %}

@@ -9,34 +9,26 @@
         <li class="nav-item active">
           <a class="nav-link" href="/">На главную <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
         <li class="nav-item">
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
         </li>
+
       </ul>
       <ul class="navbar-nav mr-auto">
         {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <span class="nav-link">Привет, {{ current_user.username }}!</span>
-          </li>
-          {% if current_user.is_admin %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('admin.admin_index') }}">Админка</a>
-          </li>
-          {% endif %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('user.logout') }}">Выход</a>
-          </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Привет, {{ current_user.username }}!
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('advert.new_advert') }}">Создать объявление</a>
+            {% if current_user.is_admin %}
+            <a class="dropdown-item" href="{{ url_for('admin.admin_index') }}">Админка</a>
+            {% endif %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('user.logout') }}">Выход</a>
+          </div>
+        </li>
         {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('user.register') }}">Регистрация</a>
@@ -45,6 +37,7 @@
             <a class="nav-link" href="{{ url_for('user.login', next=request.full_path) }}">Вход</a>
           </li>
         {% endif %}
+
        </ul>
         <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" placeholder="Что ищем?" aria-label="Search">
