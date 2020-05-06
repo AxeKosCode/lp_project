@@ -142,8 +142,9 @@ def upload_files(advert_id):
     if not my_advert:
         abort(404)
     if not current_user.id == my_advert.user_id:
-        flash('Нельзя редактировать чужие объявления')
-        redirect(get_redirect_target())
+        flash('Вы пытаетесь отредактировать чужое объявление!')
+        flash('Лучше создайте своё!')
+        return redirect(url_for('advert.new_advert'))
     form = UploadFilesForm(
         user_id=current_user.id,
         advert_id=my_advert.id
@@ -158,11 +159,44 @@ def uploading():
     def allowed_file(filename):
         return '.' in filename and filename.rsplit('.', 1)[1] in current_app.config['ALLOWED_EXTENSIONS']
     if request.method == 'POST':
+        form = UploadFilesForm()
+    # Проверки на 
+    # 1) соответствие польз. текущему, 
+    # 2) существует ли объявл. с таким id, 
+    # 3) принадлежит ли это объявл. тек.польз.
+        if not (current_user.id == int(request.form['user_id'])):
+            flash('Ты не ты, когда голодный! Не пора ли перекусить?')
+            return redirect(url_for('advert.index'))
+        if not Advert.query.filter(Advert.id == request.form['advert_id']).first():
+            flash('Вы пытаетесь добавить изображения в несуществующее объявление')
+            return redirect(url_for('advert.index'))
+        if not Advert.query.filter(Advert.user_id == current_user.id).first():
+            flash('Вы пытаетесь добавить изображения в чужое объявление')
+            flash('Лучше создайте своё!')
+            return redirect(url_for('advert.new_advert'))
 
-        print('=============КОЛ-ВО ФАЙЛОВ', request.files)#rf) #request.files['photos'])
-        # ============request.files===КОЛ-ВО ФАЙЛОВ ImmutableMultiDict([('photos', <FileStorage: 'QCY BOX2 1.jpg' ('image/jpeg')>), ('photos', <FileStorage: 'QCY BOX2 2.jpg' ('image/jpeg')>), ('photos', <FileStorage: 'QCY BOX2 3.jpg' ('image/jpeg')>)])
-        #     file = request.files[rfile]
-        #     # if file and allowed_file(file.filename):
-        #     filename = file.filename
-        #     file.save(os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], filename))
-        # return redirect(url_for('advert.index'))
+        print('===== ФАЙЛЫ В ЗАПРОСЕ', request.files)
+        # если в форме есть данные, то: создаём путь, сохраняем файлы, информируем
+        if form.photos.data:
+            path = current_app.config['UPLOAD_FILES_ADVERTS']+request.form['advert_id']
+            try:
+                if not os.path.isdir(path):
+                    print('Каталога по адресу', path, '\nне существует')
+                    os.makedirs(path)
+                    print('Но теперь', path, '\nуспешно создан!')
+                else:
+                    print('Каталог', path, '\nуже есть. Будем сохранять в него!')
+            except OSError:
+                print('Ошибка создания каталога')
+                flash('Ошибка загрузки. Попробуйте ещё раз')
+                return redirect(url_for('upload_files'))
+            for j, i in enumerate(form.photos.data, 1):
+                if allowed_file(i.filename):
+                    try:
+                        i.save(os.path.join(path, str(j)+'.'+i.filename.rsplit('.', 1)[-1]))
+                        print('Файл', i.filename, 'успешно сохранён в каталог', path)
+                    except OSError:
+                        print('Не удалось загрузить файл', i.filename)
+                        flash('Не удалось загрузить файл', i.filename + '. Попробуйте ещё раз')
+    return redirect(url_for('advert.index'))
+

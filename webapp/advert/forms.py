@@ -9,7 +9,7 @@ from webapp.user.models import User
 class CommentForm(FlaskForm):
     advert_id = HiddenField('ID объявления', validators=[DataRequired()])
     comment_text = StringField('Ваш комментарий', validators=[DataRequired()], render_kw={"class": "form-control"})
-    submit = SubmitField('Отправить!',render_kw={"class": "btn btn-primary"})
+    submit = SubmitField('Отправить!',render_kw={"class": "btn btn-success"})
 
     def validate_advert_id(self, advert_id):
         if not Advert.query.get(advert_id.data):
@@ -25,7 +25,7 @@ class NewAdvertForm(FlaskForm):
     price = StringField('Стоимость товара <span class="gray"> (Укажите стоимость цифрами в формате "12345.67")</span>', validators=[DataRequired()], render_kw={"class": "form-control"})
     phone = StringField('Номер телефона продавца <span class="gray">(в формате 9991234567)</span>', validators=[DataRequired()], render_kw={"class": "form-control"})
     company = RadioField(u'Компания или Частное лицо?', choices=[(0, 'Частное лицо'), (1, 'Компания')], default=0)
-    submit = SubmitField('Опубликовать!',render_kw={"class": "btn btn-primary"})
+    submit = SubmitField('Опубликовать!',render_kw={"class": "btn btn-success"})
 
     def validate_user_id(self, user_id):
         if not User.query.get(user_id.data):
@@ -35,8 +35,8 @@ class NewAdvertForm(FlaskForm):
 class UploadFilesForm(FlaskForm):
     user_id = HiddenField('ID пользователя', validators=[DataRequired()])
     advert_id = HiddenField('ID объявления', validators=[DataRequired()])
-    photos = MultipleFileField('Фотографии товара <span class="gray">(можно выбрать сразу несколько)</span>', validators=[DataRequired()])
-    submit = SubmitField('Загрузить!',render_kw={"class": "btn btn-primary"})
+    photos = MultipleFileField(label='Фотографии товара <span class="gray">(можно выбрать сразу несколько)</span>', render_kw={"class":"form-control-file"}, validators=[DataRequired()])
+    submit = SubmitField('Загрузить!',render_kw={"class": "btn btn-success btn-lg btn-block"})
 
     def validate_user_id(self, user_id):
         if not User.query.get(user_id.data):
